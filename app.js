@@ -13,11 +13,11 @@ const startConnectionAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     });
-    app.open(3000, () => {
+    app.listen(3000, () => {
       console.log("The server is running at http://localhost:3000/");
     });
   } catch (e) {
-    console.log("The error message is ${e.message}");
+    console.log(`The error message is ${e.message}`);
     process.exit(1);
   }
 };
@@ -25,7 +25,11 @@ startConnectionAndServer();
 
 // API GET ALL PLAYERS
 app.get("/players/", async (request, response) => {
-  const playerDetails = `SELECT * FROM cricket_team`;
+  const playerDetails = ` 
+     SELECT
+     * 
+     FROM
+     cricket_team;`;
   const playerResult = await db.all(playerDetails);
   response.send(playerResult);
 });
@@ -44,7 +48,7 @@ app.post("/players/", async (request, response) => {
 //API3 GET A PLAYER
 app.get("/players/:playerId/", async (request, response) => {
   const { playerId } = request.params;
-  const sqlQuery = `SELECT * FROM cricket_team WHERE player_id = ${playerId}`;
+  const sqlQuery = `SELECT * FROM cricket_team WHERE player_id = ${playerId};`;
   const result = await db.get(sqlQuery);
   response.send(result);
 });
@@ -55,7 +59,7 @@ app.put("/players/:playerId/", async (request, response) => {
   const playerDetails = request.body;
   const { playerName, jerseyNumber, role } = playerDetails;
   const sqlQuery = `UPDATE cricket_team set (playerName = ${playerName},
-        jerseyNumber = ${jerseyNumber},role = ${role} WHERE player_id = ${playerId})`;
+        jerseyNumber = ${jerseyNumber},role = ${role} WHERE player_id = ${playerId});`;
   const result = await db.run(sqlQuery);
   response.send("Player Details Updated");
 });
@@ -63,7 +67,7 @@ app.put("/players/:playerId/", async (request, response) => {
 //API5 DELETE A PLAYER
 app.delete("/players/:playerId/", async (request, response) => {
   const { playerId } = request.params;
-  const sqlQuery = `DELETE FROM cricket_team WHERE player_id = ${player_id}`;
+  const sqlQuery = `DELETE FROM cricket_team WHERE player_id = ${playerId};`;
   const result = await db.run(sqlQuery);
   response.send("Player Removed");
 });
